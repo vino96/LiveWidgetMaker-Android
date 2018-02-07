@@ -60,4 +60,8 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>-->
+
+
+    <include layout="@layout/activity_zukei_acriviry" />
+
 </android.support.constraint.ConstraintLayout>

@@ -89,6 +89,7 @@ public class AppsListActivity extends Activity {
 
     }
 
+
     private  void addClickListener(){
         list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override

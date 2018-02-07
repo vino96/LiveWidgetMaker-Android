@@ -19,12 +19,15 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:menu="@menu/activity_main_drawer"/>
-        <!--app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer">
 
-        navheaderには選択されている要素を表示させたい。
-        grafics以降
+    </android.support.design.widget.NavigationView>
 
-        -->
+    <!--app:headerLayout="@layout/nav_header_main"
+
+    navheaderには選択されている要素を表示させたい。
+    grafics以降
+
+    -->
 
 </android.support.v4.widget.DrawerLayout>
