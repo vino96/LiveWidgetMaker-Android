@@ -41,6 +41,8 @@ public class Zukei implements Serializable {
 
     public String String;
 
+    public boolean actiontrigger;
+
     public int color;
     public  Zukei(String type,int x,int y,int width,int height){
         this.type   = type ;

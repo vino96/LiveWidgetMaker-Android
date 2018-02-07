@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity
     //こちらで紐づけた場合は紐づけた要素のレイヤ―のデータに紐づけること
     //wipのためコメントアウト
 
-    //public List<Zukei> actZukeis = new ArrayList<Zukei>();
+    public List<Zukei> actZukeis = new ArrayList<Zukei>();
 
 
     @Override
@@ -150,13 +151,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void returnZukeiList(List<Zukei> value,String folderName){
-        //zukeiActivityにzukeis(リスト)を引き渡す処理を記述する
         list = (ListView) findViewById(R.id.objectList);
         this.zukeis = value;
         this.fileName = folderName;
 
-        ArrayAdapter<Zukei> adapter = new ArrayAdapter<Zukei>(this, R.layout.activity_app, zukeis) {
-
+        //zukeisに引き渡したリストのうち、アクショントリガーを保持しているものを別リスト(actZukeis)に保持
+        for(int i = 0;i<zukeis.size();i++){
+            if(zukeis.get(i).actiontrigger){
+                actZukeis.add(zukeis.get(i));
+                debugMessage(zukeis.get(i).type);
+            }
+        }
+        //引き継いだ図形リストをMainActivityに表示
+        ArrayAdapter<Zukei> adapter = new ArrayAdapter<Zukei>(this, R.layout.activity_app, actZukeis) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
@@ -172,9 +179,26 @@ public class MainActivity extends AppCompatActivity
 
             }
         };
+        addClickListener();
         if(adapter!=null) {
             list.setAdapter(adapter);
         }
+    }
+
+
+    private  void addClickListener(){
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+                //TODO : 割り当てショートカットの呼び出し
+                // (今は左から出てるけど、アクティビティ化して呼び出したのちに、
+                // 引き継いだ値からどのオブジェクトに割り当てるかを判別、
+                // 戻り値にzukeisリストの当該オブジェクトに挿入、保持
+                // 待ち受け設定後に割り当て)
+                //問題はアプリ用のショートカットを現在のリストからアクティビティに変更するやり方がわからない
+                debugMessage("タッチイベント発生、イベント発生オブジェクトレイヤー:"+actZukeis.get(position).layer);
+            }
+        });
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
