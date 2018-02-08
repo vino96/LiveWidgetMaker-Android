@@ -52,7 +52,6 @@ public class FileSelectionDialog
     public void show(File fileDirectory) {
         // タイトル
         String strTitle = fileDirectory.getAbsolutePath();
-
         // リストビュー
         ListView listview = new ListView(m_parent);
         listview.setScrollingCacheEnabled(false);
@@ -96,10 +95,6 @@ public class FileSelectionDialog
             show(fileinfo.getFile());
         } else {
             // ファイルが選ばれた：リスナーのハンドラを呼び出す
-
-
-            //解凍してgraficsで表示まで 未達成
-
             List<Zukei> zukeis = new ArrayList<Zukei>();
             extract(fileinfo.getFile());
             String fileNameWithOutExtension = getFileName(fileinfo.getFile().getName());
@@ -128,8 +123,6 @@ public class FileSelectionDialog
             } catch (Exception e){
                 m_listener.debugMessage(e.getMessage() + "Exception");
             }
-
-
             //MainActivityにリストを引き渡す
             if(zukeis != null){m_listener.returnZukeiList(zukeis,fileNameWithOutExtension);}
         }
@@ -138,8 +131,9 @@ public class FileSelectionDialog
     // 選択したファイルの情報を取り出すためのリスナーインターフェース
     public interface OnFileSelectListener {
         // ファイルが選択されたときに呼び出される関数
-        public void onFileSelect(File file);
+        //public void onFileSelect(File file);
 
+        //引き渡されたstringをtoastで表示する
         public void debugMessage(String message);
 
         public void returnZukeiList(List<Zukei> zukeis,String fileName);

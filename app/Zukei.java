@@ -24,6 +24,8 @@ public class Zukei implements Serializable {
 
     public String figuretype;
 
+    public int color;
+
     //アニメーション用パラメータ
     public String animename;
 
@@ -43,7 +45,9 @@ public class Zukei implements Serializable {
 
     public boolean actiontrigger;
 
-    public int color;
+    public String actName;
+        
+
     public  Zukei(String type,int x,int y,int width,int height){
         this.type   = type ;
         this.x      = x ;

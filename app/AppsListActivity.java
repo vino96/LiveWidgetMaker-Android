@@ -94,8 +94,10 @@ public class AppsListActivity extends Activity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                Intent i = manager.getLaunchIntentForPackage(apps.get(position).name.toString());
-                AppsListActivity.this.startActivity(i);
+                Intent intent = new Intent();
+                intent.putExtra("appNameToString",apps.get(position).name.toString());
+                setResult(Activity.RESULT_OK,intent);
+                finish();
             }
         });
     }

@@ -34,8 +34,11 @@ public class UrlActivity extends Activity {
             public void onClick(View v) {
                 // エディットテキストのテキストを取得
                 String text = editText.getText().toString();
-                // 取得したテキストを TextView に張り付ける
-                textView.setText(text);
+                // 取得したテキストをMainActivityに返す
+                Intent intent = new Intent();
+                intent.putExtra("URLToString",text);
+                setResult(Activity.RESULT_OK,intent);
+                finish();
             }
         });
     }

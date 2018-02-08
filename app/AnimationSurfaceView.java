@@ -1,6 +1,9 @@
 package com.example.k014c1298.livewidgetmaker;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -11,8 +14,10 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,20 +31,23 @@ public class AnimationSurfaceView extends SurfaceView
     static final long FPS = 20;
     static final long FRAME_TIME = 1000 / FPS;
     static final int BALL_R = 30;
+    public PackageManager pm;
     SurfaceHolder surfaceHolder;
     Thread thread;
     int cx = BALL_R, cy = BALL_R;
     int screen_width, screen_height;
     public List<Zukei> zukeis;
     public String folderName;
+    private Activity myActivity;
 
-    public AnimationSurfaceView(Context context,List<Zukei> zukeis,String folderName) {
+    public AnimationSurfaceView(Context context,List<Zukei> zukeis,String folderName, Activity pAct) {
         super(context);
+        pm = context.getPackageManager();
         this.zukeis = zukeis;
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
         this.folderName = folderName;
-
+        myActivity = pAct;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -107,7 +115,6 @@ public class AnimationSurfaceView extends SurfaceView
                         case "Image" :
 
                             Bitmap bm = BitmapFactory.decodeFile(FILE_DIR_PATH + folderName + "/" + getFileName(zukeis.get(i).ImagePath));
-                            System.out.println(zukeis.get(i).x*SCREEN_SCALE-SCREEN_DEF);
                             canvas.drawBitmap(bm,zukeis.get(i).x*SCREEN_SCALE-SCREEN_DEF,zukeis.get(i).y*SCREEN_SCALE,paint);
                             break;
 
@@ -129,6 +136,19 @@ public class AnimationSurfaceView extends SurfaceView
         screen_height = height;
     }
 
+
+    public boolean onTouchEvent(MotionEvent event)
+    {
+        //X軸の取得
+        float pointX = event.getX();
+        //Y軸の取得
+        float pointY = event.getY();
+
+        actionStart(pointX,pointY);
+        return true;
+    }
+
+
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         thread = new Thread(this);
@@ -139,7 +159,6 @@ public class AnimationSurfaceView extends SurfaceView
     public void surfaceDestroyed(SurfaceHolder holder) {
         thread = null;
     }
-
 
     public String getFileName(String filename) {
 
@@ -157,5 +176,39 @@ public class AnimationSurfaceView extends SurfaceView
         return str[1];
 
     }
+
+    public void actionStart(float x,float y){
+        for(int i = 0;i<zukeis.size();i++){
+            switch (zukeis.get(i).type){
+                case "Figure" :
+                    //X条件
+                    if(zukeis.get(i).x*SCREEN_SCALE-SCREEN_DEF < x &&
+                            zukeis.get(i).x*SCREEN_SCALE-SCREEN_DEF+zukeis.get(i).width*SCREEN_SCALE > x){
+                        //y条件
+                        if(zukeis.get(i).y*SCREEN_SCALE < y &&
+                                zukeis.get(i).y*SCREEN_SCALE+zukeis.get(i).height*SCREEN_SCALE>y){
+                            Intent intent = pm.getLaunchIntentForPackage(zukeis.get(i).actName);
+                            System.out.println(zukeis.get(i).actName);
+
+                            if(intent !=null){
+                            //Try catchでもいい
+                                myActivity.startActivity(intent);
+                            }
+                        }
+                    }
+                    break;
+                case "TextArea" :
+                    break;
+                case "Image" :
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+    }
+
 }
 
