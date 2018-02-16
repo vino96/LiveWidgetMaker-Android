@@ -107,7 +107,6 @@ public class FileSelectionDialog
                 Gson gson = new Gson();
                 while ((str = br.readLine()) != null) {
                     str = str.replaceAll(",$","");
-                    m_listener.debugMessage(str);
                     if(str.indexOf("type") != -1){
                         zukeis.add(gson.fromJson(str, Zukei.class));
                         i++;

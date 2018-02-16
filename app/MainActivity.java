@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FileSelectionDialog.OnFileSelectListener{
 
     // 初期フォルダ
-    private String				m_strInitialDir	= "/sdcard/Documents";
+    private String				m_strInitialDir	= "/sdcard/Documents/";
     public DrawerLayout drawer;
     //Zukeiクラスのリスト表示対応用
     private ListView list;
@@ -65,26 +65,24 @@ public class MainActivity extends AppCompatActivity
     private final int SHORTCUT_SELECT_CODE = 1002;
     private final int URL_SELECT_CODE = 1003;
 
+
+    AnimationSurfaceView surfaceView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        surfaceView = (AnimationSurfaceView) findViewById(R.id.prevView);
+        surfaceView.initialise();
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-/*
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-*/
-
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
 
     @Override
     public void onBackPressed() {
@@ -118,39 +116,20 @@ public class MainActivity extends AppCompatActivity
             //TODO json型への吐き出し
 
             Gson gson = new Gson();
-
-            debugMessage(m_strInitialDir+"output.json");
-
             try (JsonWriter writer =
-                         new JsonWriter(new BufferedWriter(new FileWriter(m_strInitialDir+"/output.json")))) {
+                         new JsonWriter(new BufferedWriter(new FileWriter(m_strInitialDir+"output.json")))) {
                 // ZukeiオブジェクトリストからJSONへの変換
                 gson.toJson(zukeis, ArrayList.class, writer);
             } catch (IOException ex) {
                 debugMessage(ex.getMessage());
             }
-
-
-            //お試し部屋
-            //surfaceViewの使用
-
             
-            AnimationSurfaceView surfaceView = new AnimationSurfaceView(this,zukeis,fileName,this);
-            setContentView(surfaceView);
 
         }
         return super.onOptionsItemSelected(item);
     }
-
-    // ファイルが選択されたときに呼び出される関数
-
-    public void onFileSelect( File file )
-    {
-        Toast.makeText( this, "File Selected : " + file.getPath(), Toast.LENGTH_SHORT ).show();
-        m_strInitialDir = file.getParent();
-    }
-
     public void debugMessage( String message )
-    {
+        {
         Toast.makeText( this, "message : " + message, Toast.LENGTH_SHORT).show();
     }
 
@@ -164,7 +143,6 @@ public class MainActivity extends AppCompatActivity
         for(int i = 0;i<zukeis.size();i++){
             if(zukeis.get(i).actiontrigger){
                 actZukeis.add(zukeis.get(i));
-                debugMessage(zukeis.get(i).type);
             }
         }
         //引き継いだ図形リストをMainActivityに表示
@@ -185,6 +163,8 @@ public class MainActivity extends AppCompatActivity
             }
         };
         addClickListener();
+        surfaceView.setParameter(zukeis,fileName,this);
+        surfaceView.run();
         if(adapter!=null) {
             list.setAdapter(adapter);
         }
